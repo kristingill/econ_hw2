@@ -1,0 +1,33 @@
+---
+title: "Econ HW2"
+author: "Kristin Gill and Alyssa Kibbe"
+date: "4/14/2021"
+output: 
+   html_document:
+     code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(janitor)
+library(here)
+```
+
+```{r}
+# read in the data
+water_data <- read_csv(here("data", "HW2_Water.csv")) %>% 
+  clean_names()
+```
+
+## 1. Agriculture
+```{r}
+ggplot(data = water_data, aes(x = reduced_water_use_abatement,
+                              y = mc_agriculture)) +
+  geom_line() +
+  labs(x = "Abatement (Acre Feet)",
+       y = "Price ($/Acre Feet)",
+       title = "Agriculture Marginal Cost of Water Use Abatement") +
+  theme_minimal()
+```
+
