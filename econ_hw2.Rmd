@@ -20,14 +20,79 @@ water_data <- read_csv(here("data", "HW2_Water.csv")) %>%
   clean_names()
 ```
 
-## 1. Agriculture
+## 1. 
+### Agriculture
+P = 1.9 + 0.51Q
 ```{r}
 ggplot(data = water_data, aes(x = reduced_water_use_abatement,
                               y = mc_agriculture)) +
-  geom_line() +
+  geom_line(colour = "blue") +
   labs(x = "Abatement (Acre Feet)",
        y = "Price ($/Acre Feet)",
        title = "Agriculture Marginal Cost of Water Use Abatement") +
-  theme_minimal()
+  theme_minimal() +
+  geom_smooth(method = "lm",
+              color = "black",
+              size = 0.5,
+              fill = "gray10",
+              alpha = 0.5) +
+  ggpubr::stat_regline_equation(label.x = 115, label.y = 0)
+```
+
+### Meat
+P = 9.5 + 0.38Q
+```{r}
+ggplot(data = water_data, aes(x = reduced_water_use_abatement,
+                              y = mc_meat)) +
+  geom_line(colour = "blue") +
+  labs(x = "Abatement (Acre Feet)",
+       y = "Price ($/Acre Feet)",
+       title = "Meat Marginal Cost of Water Use Abatement") +
+  theme_minimal() +
+  geom_smooth(method = "lm",
+              color = "black",
+              size = 0.5,
+              fill = "gray10",
+              alpha = 0.5) +
+  ggpubr::stat_regline_equation(label.x = 115, label.y = 0)
+```
+
+
+### Industrial
+P = -27 + 1.1Q
+```{r}
+ggplot(data = water_data, aes(x = reduced_water_use_abatement,
+                              y = mc_industrial)) +
+  geom_line(colour = "blue") +
+  labs(x = "Abatement (Acre Feet)",
+       y = "Price ($/Acre Feet)",
+       title = "Inudustrial Marginal Cost of Water Use Abatement") +
+  theme_minimal() +
+  geom_smooth(method = "lm",
+              color = "black",
+              size = 0.5,
+              fill = "gray10",
+              alpha = 0.5) +
+  ggpubr::stat_regline_equation(label.x = 115, label.y = 0)
+```
+
+
+### Urban
+
+P = -14 + 0.6Q
+```{r}
+ggplot(data = water_data, aes(x = reduced_water_use_abatement,
+                              y = mc_urban)) +
+  geom_line(colour = "blue") +
+  labs(x = "Abatement (Acre Feet)",
+       y = "Price ($/Acre Feet)",
+       title = "Urban Marginal Cost of Water Use Abatement") +
+  theme_minimal() +
+  geom_smooth(method = "lm",
+              color = "black",
+              size = 0.5,
+              fill = "gray10",
+              alpha = 0.5) +
+  ggpubr::stat_regline_equation(label.x = 115, label.y = 0)
 ```
 
