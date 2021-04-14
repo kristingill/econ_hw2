@@ -96,3 +96,4 @@ ggplot(data = water_data, aes(x = reduced_water_use_abatement,
   ggpubr::stat_regline_equation(label.x = 115, label.y = 0)
 ```
 
+
