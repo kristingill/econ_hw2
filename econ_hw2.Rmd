@@ -159,4 +159,65 @@ ggplot(data = urban_df, aes(x = quantity,
        title = "Urban Sector Demand for Water Use") +
   ggpubr::stat_regline_equation(label.x = 25, label.y = 5)
 ```
-The industrial sector is willing to pay the most ($230) for the first unit 
+The industrial sector is willing to pay the most ($230) for the first acre foot of water. 
+
+## 3. Baja California: Agriculture, Meat, and Industrial
+
+### A. Cap on water use (cut 100AF/sector)
+
+#### (1) the total cost of meeting the target in Baja California
+
+$$\int_0^{300} -15.6 + 1.99A$$
+
+```{r}
+# this might be wrong; I added together p_ag + p_meat + p_industrial to get this equation
+p_tot <- function(A) {-15.6 + (1.99*A)}
+integrate(p_tot, lower = 0, upper = 300)
+```
+
+#### (2) the total cost (or benefit) to each sector
+
+Agriculture Cost
+
+$$\int_0^{100} 1.9 + 0.51A$$
+```{r}
+p_ag <- function(A) {1.9 + (0.51*A)}
+integrate(p_ag, lower = 0, upper = 100)
+```
+
+Meat Cost
+
+$$\int_0^{100} 9.5 + 0.38A$$
+```{r}
+p_meat <- function(A) {9.5 + (0.38*A)}
+integrate(p_meat, lower = 0, upper = 100)
+```
+
+Industrial Cost
+
+$$\int_0^{100} -27 + 1.1A$$
+```{r}
+p_industrial <- function(A) {-27 + (1.1*A)}
+integrate(p_industrial, lower = 0, upper = 100)
+```
+
+
+#### (3) the tax revenue generated
+
+NONE ??????
+```{r}
+
+```
+
+
+### B. Tax on water use
+
+#### (1) the total cost of meeting the target in Baja California
+#### (2) the total cost (or benefit) to each sector
+#### (3) the tax revenue generated
+
+### C. Water Cap and Trade
+
+#### (1) the total cost of meeting the target in Baja California
+#### (2) the total cost (or benefit) to each sector
+#### (3) the tax revenue generated
