@@ -173,11 +173,25 @@ $$\int_0^{300} -15.6 + 1.99A$$
 # this might be wrong; I added together p_ag + p_meat + p_industrial to get this equation
 p_tot <- function(A) {-15.6 + (1.99*A)}
 integrate(p_tot, lower = 0, upper = 300)
+
+baja_tot_df <- data.frame(abatement = seq.int(from = 0, to = 600)) %>% 
+  mutate(price = -15.6 + (1.99*abatement)) %>% 
+  mutate(quantity = 600 - abatement)
+
+ggplot(data = baja_tot_df, aes(x = quantity,
+                               y = price)) +
+  geom_line() +
+  theme_minimal() +
+  labs(x = "Quantity(Acre Feet)",
+       y = "Price ($/Acre Feet)",
+       title = "Baja California Demand for Water Use") +
+  ggpubr::stat_regline_equation(label.x = 25, label.y = 5)
+
 ```
 
 #### (2) the total cost (or benefit) to each sector
 
-Agriculture Cost
+Agriculture Sector Cost
 
 $$\int_0^{100} 1.9 + 0.51A$$
 ```{r}
@@ -185,7 +199,7 @@ p_ag <- function(A) {1.9 + (0.51*A)}
 integrate(p_ag, lower = 0, upper = 100)
 ```
 
-Meat Cost
+Meat Sector Cost
 
 $$\int_0^{100} 9.5 + 0.38A$$
 ```{r}
@@ -193,7 +207,7 @@ p_meat <- function(A) {9.5 + (0.38*A)}
 integrate(p_meat, lower = 0, upper = 100)
 ```
 
-Industrial Cost
+Industrial Sector Cost
 
 $$\int_0^{100} -27 + 1.1A$$
 ```{r}
@@ -213,6 +227,38 @@ NONE ??????
 ### B. Tax on water use
 
 #### (1) the total cost of meeting the target in Baja California
+
+$$\int_0^{300} -15.6 + 1.99A$$
+```{r}
+# price when A = 300
+tax = -15.6 + (1.99*300)
+
+baja_tot_tax <- baja_tot_df %>% 
+  mutate(price_tax = price - 581.4) %>% 
+  mutate(quantity_tax = 309.3 - (0.5*price_tax)) # I think the new equation rearranged after subtracting the tax from the price?
+
+ggplot(data = baja_tot_tax, aes(x = quantity,
+                                y = price_tax)) +
+  geom_line() +
+  theme_minimal() +
+  scale_y_continuous(limits = c(0, 620)) +
+  scale_x_continuous(limits = c(0, 310))+
+  ggpubr::stat_regline_equation(label.x = 25, label.y = 150)
+
+# shift down in the demand curve
+ggplot() +
+  geom_line(data = baja_tot_tax, aes(x = quantity,
+                                y = price_tax)) +
+  geom_line(data = baja_tot_df, aes(x = quantity,
+                               y = price)) +
+  scale_y_continuous(limits = c(0, 1200)) +
+  theme_minimal()
+
+# isn't the total cost the same as before? $$\int_0^{300} -15.6 + 1.99A$$
+tax_cost_tot <- function(A) {-15.6 + (1.99*A)}
+integrate(p_tot, lower = 0, upper = 300)
+```
+
 #### (2) the total cost (or benefit) to each sector
 #### (3) the tax revenue generated
 
