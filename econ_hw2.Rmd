@@ -94,6 +94,19 @@ ggplot(data = water_data, aes(x = reduced_water_use_abatement,
               alpha = 0.5) +
   ggpubr::stat_regline_equation(label.x = 115, label.y = 0)
 ```
+```{r}
+#combined graphs
+ggplot() +
+  geom_line(data = water_data, aes(x = reduced_water_use_abatement,y = mc_urban), color = "red")+
+  geom_line(data = water_data, aes(x = reduced_water_use_abatement, y = mc_industrial), color = "blue")+
+  geom_line(data = water_data, aes(x = reduced_water_use_abatement, y=mc_meat), color = "black")+
+  geom_line(data = water_data, aes(x = reduced_water_use_abatement, y=mc_agriculture), color = "green") +
+  geom_line(colour = "blue") +
+  labs(x = "Abatement (Acre Feet)",
+       y = "Price ($/Acre Feet)",
+       title = "Marginal Cost of Water Use Abatement") +
+  theme_minimal()
+```
 
 ## 2. 
 ### Agriculture
