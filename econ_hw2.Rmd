@@ -12,6 +12,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 library(tidyverse)
 library(janitor)
 library(here)
+library(patchwork)
 ```
 
 ```{r}
@@ -26,7 +27,7 @@ P = 1.9 + 0.51(abatement)
 ```{r}
 ggplot(data = water_data, aes(x = reduced_water_use_abatement,
                               y = mc_agriculture)) +
-  geom_line(colour = "blue") +
+  geom_line(colour = "green") +
   labs(x = "Abatement (Acre Feet)",
        y = "Price ($/Acre Feet)",
        title = "Agriculture Marginal Cost of Water Use Abatement") +
@@ -44,7 +45,7 @@ P = 9.5 + 0.38(abatement)
 ```{r}
 ggplot(data = water_data, aes(x = reduced_water_use_abatement,
                               y = mc_meat)) +
-  geom_line(colour = "blue") +
+  geom_line(colour = "red") +
   labs(x = "Abatement (Acre Feet)",
        y = "Price ($/Acre Feet)",
        title = "Meat Marginal Cost of Water Use Abatement") +
@@ -63,7 +64,7 @@ P = -27 + 1.1(abatement)
 ```{r}
 ggplot(data = water_data, aes(x = reduced_water_use_abatement,
                               y = mc_industrial)) +
-  geom_line(colour = "blue") +
+  geom_line(colour = "purple") +
   labs(x = "Abatement (Acre Feet)",
        y = "Price ($/Acre Feet)",
        title = "Inudustrial Marginal Cost of Water Use Abatement") +
@@ -93,6 +94,53 @@ ggplot(data = water_data, aes(x = reduced_water_use_abatement,
               fill = "gray10",
               alpha = 0.5) +
   ggpubr::stat_regline_equation(label.x = 115, label.y = 0)
+```
+
+### All Together
+```{r}
+#combined graphs
+og_data <- ggplot() +
+  geom_line(data = water_data, aes(x = reduced_water_use_abatement,y = mc_urban), color = "blue") +
+  geom_line(data = water_data, aes(x = reduced_water_use_abatement, y = mc_industrial), color = "purple") +
+  geom_line(data = water_data, aes(x = reduced_water_use_abatement, y=mc_meat), color = "red") +
+  geom_line(data = water_data, aes(x = reduced_water_use_abatement, y=mc_agriculture), color = "green") +
+  labs(x = "Abatement (Acre Feet)",
+       y = "Price ($/Acre Feet)",
+       title = "Marginal Cost of Water Use Abatement",
+       color = "Sector") +
+  theme_minimal() +
+  scale_x_continuous(limit = c(0,150))
+
+# is this what they are asking for?
+ag_df <- data.frame(abatement = seq.int(from = 0, to = 170)) %>% 
+  mutate(price = 1.9 + (0.51*abatement))
+
+meat_df <- data.frame(abatement = seq.int(from = 0, to = 200)) %>% 
+  mutate(price = 9.5 + (0.38*abatement))
+
+industrial_df <- data.frame(abatement = seq.int(from = 0, to = 230)) %>% 
+  mutate(price = -27 + (1.1*abatement))
+
+urban_df <- data.frame(abatement = seq.int(from = 0, to = 300)) %>% 
+  mutate(price = -14 + (0.6*abatement))
+
+reg_data <- ggplot() +
+  geom_line(data = urban_df, aes(x = abatement, y = price, color = "blue")) +
+  geom_line(data = industrial_df, aes(x = abatement, y = price, color = "purple")) +
+  geom_line(data = meat_df, aes(x = abatement, y = price, color = "red")) +
+  geom_line(data = ag_df, aes(x = abatement, y = price, color = "green")) +
+  labs(x = "Abatement (Acre Feet)",
+       y = " ",
+       color = "Sector") +
+  theme_minimal() +
+  scale_x_continuous(limit = c(0,150)) +
+  scale_y_continuous(limit = c(0,150)) +
+  scale_color_manual(labels = c("Urban", "Industrial", "Meat", "Agriculture"), values = c("blue", "purple", "red", "green"))
+
+# put them together
+graph_compound <- (og_data|reg_data) & plot_layout(guides = "collect")
+
+graph_compound
 ```
 
 ## 2. 
