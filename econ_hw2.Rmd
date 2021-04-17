@@ -285,7 +285,7 @@ baja_tot_tax <- baja_tot_df %>%
   mutate(price_tax = price - 581.4) %>% 
   mutate(quantity_tax = 309.3 - (0.5*price_tax)) # I think the new equation rearranged after subtracting the tax from the price?
 
-ggplot(data = baja_tot_tax, aes(x = quantity,
+ggplot(data = baja_tot_tax, aes(x = quantity_tax,
                                 y = price_tax)) +
   geom_line() +
   theme_minimal() +
@@ -295,7 +295,7 @@ ggplot(data = baja_tot_tax, aes(x = quantity,
 
 # shift down in the demand curve
 ggplot() +
-  geom_line(data = baja_tot_tax, aes(x = quantity,
+  geom_line(data = baja_tot_tax, aes(x = quantity_tax,
                                 y = price_tax)) +
   geom_line(data = baja_tot_df, aes(x = quantity,
                                y = price)) +
@@ -308,6 +308,12 @@ integrate(p_tot, lower = 0, upper = 300)
 ```
 
 #### (2) the total cost (or benefit) to each sector
+
+Agriculture Sector Cost
+```{r}
+
+```
+
 #### (3) the tax revenue generated
 
 ### C. Water Cap and Trade
