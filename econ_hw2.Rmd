@@ -208,6 +208,8 @@ ggplot(data = urban_df, aes(x = quantity,
        title = "Urban Sector Demand for Water Use") +
   ggpubr::stat_regline_equation(label.x = 25, label.y = 5)
 ```
+
+
 The industrial sector is willing to pay the most ($230) for the first acre foot of water. 
 
 ## 3. Baja California: Agriculture, Meat, and Industrial
