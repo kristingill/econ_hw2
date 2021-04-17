@@ -110,7 +110,7 @@ og_data <- ggplot() +
        color = "Sector") +
   theme_minimal() +
   scale_x_continuous(limit = c(0,150)) +
-  scale_color_manual(labels = c("Urban", "Industrial", "Meat", "Agriculture"), values = c("blue", "black", "red", "green"))
+  scale_color_manual(labels = c("Industrial", "Urban", "Agriculture", "Meat"), values = c("black", "blue", "green", "red"))
 
 # is this what they are asking for?
 ag_df <- data.frame(abatement = seq.int(from = 0, to = 170)) %>% 
@@ -136,7 +136,7 @@ reg_data <- ggplot() +
   theme_minimal() +
   scale_x_continuous(limit = c(0,150)) +
   scale_y_continuous(limit = c(0,150)) +
-  scale_color_manual(labels = c("Urban", "Industrial", "Meat", "Agriculture"), values = c("blue", "black", "red", "green"))
+  scale_color_manual(labels = c("Industrial", "Urban", "Agriculture", "Meat"), values = c("black", "blue", "green", "red"))
 
 # put them together
 graph_compound <- (og_data|reg_data) & plot_layout(guides = "collect")
