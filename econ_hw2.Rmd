@@ -322,5 +322,17 @@ Agriculture Sector Cost
 ### C. Water Cap and Trade
 
 #### (1) the total cost of meeting the target in Baja California
+```{r}
+cap_and_trade <- merge(meat_df, ag_df, by = "abatement") %>% 
+  rename("price_meat" = "price.x") %>%
+  rename("quantity_meat" = "quantity.x") %>% 
+  rename("price_agriculture" = "price.y") %>% 
+  rename("quantity_agriculture" = "quantity.y") 
+
+cap_and_trade_3 <- merge(cap_and_trade, industrial_df, by = "abatement") %>% 
+  rename("price_industrial" = "price") %>% 
+  rename("quantity_industrial" = "quantity") 
+```
+
 #### (2) the total cost (or benefit) to each sector
 #### (3) the tax revenue generated
