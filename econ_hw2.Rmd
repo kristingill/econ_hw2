@@ -100,16 +100,17 @@ ggplot(data = water_data, aes(x = reduced_water_use_abatement,
 ```{r}
 #combined graphs
 og_data <- ggplot() +
-  geom_line(data = water_data, aes(x = reduced_water_use_abatement,y = mc_urban), color = "blue") +
-  geom_line(data = water_data, aes(x = reduced_water_use_abatement, y = mc_industrial), color = "purple") +
-  geom_line(data = water_data, aes(x = reduced_water_use_abatement, y=mc_meat), color = "red") +
-  geom_line(data = water_data, aes(x = reduced_water_use_abatement, y=mc_agriculture), color = "green") +
+  geom_line(data = water_data, aes(x = reduced_water_use_abatement,y = mc_urban, color = "blue"), show.legend = FALSE) +
+  geom_line(data = water_data, aes(x = reduced_water_use_abatement, y = mc_industrial, color = "black"), show.legend = FALSE) +
+  geom_line(data = water_data, aes(x = reduced_water_use_abatement, y=mc_meat, color = "red"), show.legend = FALSE) +
+  geom_line(data = water_data, aes(x = reduced_water_use_abatement, y=mc_agriculture, color = "green"), show.legend = FALSE) +
   labs(x = "Abatement (Acre Feet)",
        y = "Price ($/Acre Feet)",
        title = "Marginal Cost of Water Use Abatement",
        color = "Sector") +
   theme_minimal() +
-  scale_x_continuous(limit = c(0,150))
+  scale_x_continuous(limit = c(0,150)) +
+  scale_color_manual(labels = c("Urban", "Industrial", "Meat", "Agriculture"), values = c("blue", "black", "red", "green"))
 
 # is this what they are asking for?
 ag_df <- data.frame(abatement = seq.int(from = 0, to = 170)) %>% 
@@ -126,7 +127,7 @@ urban_df <- data.frame(abatement = seq.int(from = 0, to = 300)) %>%
 
 reg_data <- ggplot() +
   geom_line(data = urban_df, aes(x = abatement, y = price, color = "blue")) +
-  geom_line(data = industrial_df, aes(x = abatement, y = price, color = "purple")) +
+  geom_line(data = industrial_df, aes(x = abatement, y = price, color = "black")) +
   geom_line(data = meat_df, aes(x = abatement, y = price, color = "red")) +
   geom_line(data = ag_df, aes(x = abatement, y = price, color = "green")) +
   labs(x = "Abatement (Acre Feet)",
@@ -135,7 +136,7 @@ reg_data <- ggplot() +
   theme_minimal() +
   scale_x_continuous(limit = c(0,150)) +
   scale_y_continuous(limit = c(0,150)) +
-  scale_color_manual(labels = c("Urban", "Industrial", "Meat", "Agriculture"), values = c("blue", "purple", "red", "green"))
+  scale_color_manual(labels = c("Urban", "Industrial", "Meat", "Agriculture"), values = c("blue", "black", "red", "green"))
 
 # put them together
 graph_compound <- (og_data|reg_data) & plot_layout(guides = "collect")
