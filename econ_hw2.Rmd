@@ -331,7 +331,10 @@ cap_and_trade <- merge(meat_df, ag_df, by = "abatement") %>%
 
 cap_and_trade_3 <- merge(cap_and_trade, industrial_df, by = "abatement") %>% 
   rename("price_industrial" = "price") %>% 
-  rename("quantity_industrial" = "quantity") 
+  rename("quantity_industrial" = "quantity") %>% 
+  select(abatement, price_meat, price_agriculture, price_industrial) %>% 
+  mutate(ind_min_meat = price_industrial - price_meat) %>% 
+  mutate(ag_min_meat = price_agriculture - price_meat)
 ```
 
 #### (2) the total cost (or benefit) to each sector
