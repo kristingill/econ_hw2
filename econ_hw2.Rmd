@@ -97,7 +97,7 @@ ggplot(data = water_data, aes(x = reduced_water_use_abatement,
 ```
 
 ### All Together
-```{r}
+```{r, fig.cap = "**Figure 1:** The marginal cost of water use abatement in Baja California and Baja California Sur for the sectors Agriculture, Industrial, Meat, and Urban. Water quantity is measured in Acre Feet and price is Dollars per Acre Feet. The graph on the left is the original marginal cost data and the graph on the right shows the estimated marginal cost curves using linear regression."}
 #combined graphs
 og_data <- ggplot() +
   geom_line(data = water_data, aes(x = reduced_water_use_abatement,y = mc_urban, color = "blue"), show.legend = FALSE) +
