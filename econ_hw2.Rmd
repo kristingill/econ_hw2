@@ -218,16 +218,26 @@ The industrial sector is willing to pay the most ($230) for the first acre foot 
 
 #### (1) the total cost of meeting the target in Baja California
 
-$$\int_0^{300} -15.6 + 1.99A$$
+$$\int_0^{300} 1.8 + 0.18A$$
 
 ```{r}
-# this might be wrong; I added together p_ag + p_meat + p_industrial to get this equation
-p_tot <- function(A) {-15.6 + (1.99*A)}
-integrate(p_tot, lower = 0, upper = 300)
+# demand aggregate for Baja California = demand agriculture + demand industrial + demand meat
 
-baja_tot_df <- data.frame(abatement = seq.int(from = 0, to = 600)) %>% 
-  mutate(price = -15.6 + (1.99*abatement)) %>% 
-  mutate(quantity = 600 - abatement)
+# demand agriculture: P = 89 - 0.51 Q --> Q = (P-89)/(-0.51)
+# demand industrial: P = 230 - 1.1 Q --> Q = (P - 230)/(-1.1)
+# demand meat: P = 86 - 0.38 Q --> Q = (P - 86)/(-0.38)
+
+# demand aggregate: P = (Q - 609.92)/(-5.50)
+
+baja_tot_df <- data.frame(quantity = seq.int(from = 0, to = 600)) %>% 
+  mutate(price = (quantity - 609.92)/(-5.50)) %>% 
+  mutate(abatement = 600 - quantity)
+
+ggplot(data = baja_tot_df, aes(x = abatement,
+                               y = price)) +
+  geom_line() +
+  theme_minimal() +
+  ggpubr::stat_regline_equation(label.x = 25, label.y = 5)
 
 ggplot(data = baja_tot_df, aes(x = quantity,
                                y = price)) +
@@ -238,6 +248,8 @@ ggplot(data = baja_tot_df, aes(x = quantity,
        title = "Baja California Demand for Water Use") +
   ggpubr::stat_regline_equation(label.x = 25, label.y = 5)
 
+p_tot <- function(A) {1.8 + (0.18*A)}
+integrate(p_tot, lower = 0, upper = 300)
 ```
 
 #### (2) the total cost (or benefit) to each sector
@@ -269,46 +281,13 @@ integrate(p_industrial, lower = 0, upper = 100)
 
 #### (3) the tax revenue generated
 
-NONE ??????
-```{r}
-
-```
+There is no tax revenue generated when a cap is put on pollution because no taxes have been implemented. 
 
 
 ### B. Tax on water use
 
 #### (1) the total cost of meeting the target in Baja California
 
-$$\int_0^{300} -15.6 + 1.99A$$
-```{r}
-# price when A = 300
-tax = -15.6 + (1.99*300)
-
-baja_tot_tax <- baja_tot_df %>% 
-  mutate(price_tax = price - 581.4) %>% 
-  mutate(quantity_tax = 309.3 - (0.5*price_tax)) # I think the new equation rearranged after subtracting the tax from the price?
-
-ggplot(data = baja_tot_tax, aes(x = quantity_tax,
-                                y = price_tax)) +
-  geom_line() +
-  theme_minimal() +
-  scale_y_continuous(limits = c(0, 620)) +
-  scale_x_continuous(limits = c(0, 310))+
-  ggpubr::stat_regline_equation(label.x = 25, label.y = 150)
-
-# shift down in the demand curve
-ggplot() +
-  geom_line(data = baja_tot_tax, aes(x = quantity_tax,
-                                y = price_tax)) +
-  geom_line(data = baja_tot_df, aes(x = quantity,
-                               y = price)) +
-  scale_y_continuous(limits = c(0, 1200)) +
-  theme_minimal()
-
-# isn't the total cost the same as before? $$\int_0^{300} -15.6 + 1.99A$$
-tax_cost_tot <- function(A) {-15.6 + (1.99*A)}
-integrate(p_tot, lower = 0, upper = 300)
-```
 
 #### (2) the total cost (or benefit) to each sector
 
@@ -332,9 +311,21 @@ cap_and_trade <- merge(meat_df, ag_df, by = "abatement") %>%
 cap_and_trade_3 <- merge(cap_and_trade, industrial_df, by = "abatement") %>% 
   rename("price_industrial" = "price") %>% 
   rename("quantity_industrial" = "quantity") %>% 
-  select(abatement, price_meat, price_agriculture, price_industrial) %>% 
-  mutate(ind_min_meat = price_industrial - price_meat) %>% 
-  mutate(ag_min_meat = price_agriculture - price_meat)
+  select(abatement, price_meat, price_agriculture, price_industrial)
+
+ggplot() +
+  geom_line(data = cap_and_trade_3, aes(x = abatement,
+                                        y = price_industrial),
+                                        color = "black") +
+  geom_line(data = cap_and_trade_3, aes(x = abatement,
+                                        y = price_meat),
+                                        color = "red") +
+  geom_line(data = cap_and_trade_3, aes(x = abatement,
+                                        y = price_agriculture),
+                                        color = "green") +
+  theme_minimal() +
+  scale_y_continuous(limits = c(0,150)) +
+  geom_hline(yintercept = 56.24)
 ```
 
 #### (2) the total cost (or benefit) to each sector
