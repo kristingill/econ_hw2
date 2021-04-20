@@ -113,16 +113,16 @@ og_data <- ggplot() +
   scale_color_manual(labels = c("Industrial", "Urban", "Agriculture", "Meat"), values = c("black", "blue", "green", "red"))
 
 # is this what they are asking for?
-ag_df <- data.frame(abatement = seq.int(from = 0, to = 170)) %>% 
+ag_df <- data.frame(abatement = seq.int(from = 0, to = 350)) %>% 
   mutate(price = 1.9 + (0.51*abatement))
 
-meat_df <- data.frame(abatement = seq.int(from = 0, to = 200)) %>% 
+meat_df <- data.frame(abatement = seq.int(from = 0, to = 350)) %>% 
   mutate(price = 9.5 + (0.38*abatement))
 
-industrial_df <- data.frame(abatement = seq.int(from = 0, to = 230)) %>% 
+industrial_df <- data.frame(abatement = seq.int(from = 0, to = 350)) %>% 
   mutate(price = -27 + (1.1*abatement))
 
-urban_df <- data.frame(abatement = seq.int(from = 0, to = 300)) %>% 
+urban_df <- data.frame(abatement = seq.int(from = 0, to = 350)) %>% 
   mutate(price = -14 + (0.6*abatement))
 
 reg_data <- ggplot() +
@@ -147,7 +147,7 @@ graph_compound
 ## 2. 
 ### Agriculture
 ```{r}
-ag_df <- data.frame(abatement = seq.int(from = 0, to = 170)) %>% 
+ag_df <- data.frame(abatement = seq.int(from = 0, to = 350)) %>% 
   mutate(price = 1.9 + (0.51*abatement)) %>% 
   mutate(quantity = 170 - abatement)
 
@@ -163,7 +163,7 @@ ggplot(data = ag_df, aes(x = quantity,
 
 ### Meat
 ```{r}
-meat_df <- data.frame(abatement = seq.int(from = 0, to = 200)) %>% 
+meat_df <- data.frame(abatement = seq.int(from = 0, to = 350)) %>% 
   mutate(price = 9.5 + (0.38*abatement)) %>% 
   mutate(quantity = 200 - abatement)
 
@@ -179,7 +179,7 @@ ggplot(data = meat_df, aes(x = quantity,
 
 ### Industrial
 ```{r}
-industrial_df <- data.frame(abatement = seq.int(from = 0, to = 230)) %>% 
+industrial_df <- data.frame(abatement = seq.int(from = 0, to = 350)) %>% 
   mutate(price = -27 + (1.1*abatement)) %>% 
   mutate(quantity = 230 - abatement)
 
@@ -195,7 +195,7 @@ ggplot(data = industrial_df, aes(x = quantity,
 
 ### Urban
 ```{r}
-urban_df <- data.frame(abatement = seq.int(from = 0, to = 300)) %>% 
+urban_df <- data.frame(abatement = seq.int(from = 0, to = 350)) %>% 
   mutate(price = -14 + (0.6*abatement)) %>% 
   mutate(quantity = 300 - abatement)
 
@@ -211,6 +211,35 @@ ggplot(data = urban_df, aes(x = quantity,
 
 
 The industrial sector is willing to pay the most ($230) for the first acre foot of water. 
+```{r}
+# all the BC demand curves together
+baja_tot_df <- data.frame(quantity = seq.int(from = 0, to = 600)) %>% 
+  mutate(price = (quantity - 609.92)/(-5.50)) %>% 
+  mutate(abatement = 600 - quantity)
+
+ggplot() +
+  geom_line(data = ag_df, aes(x = quantity,
+                       y = price,
+                       color = "green")) +
+  geom_line(data = meat_df, aes(x = quantity,
+                         y = price,
+                         color = "red")) +
+  geom_line(data = industrial_df, aes(x = quantity,
+                               y = price,
+                               color = "black")) +
+  geom_line(data = baja_tot_df, aes(x = quantity,
+                                    y = price,
+                                    color = "purple")) +
+  theme_minimal() +
+  scale_x_continuous(limits = c(0,250)) +
+  scale_y_continuous(limits = c(0,250)) +
+  labs(x = "Quantity(AF Water)",
+       y = "Price ($/AF)",
+       title = "Marginal Benefit of Water Use by Sector",
+       color = "Sector") +
+  scale_color_manual(labels = c("Industrial", "Agriculture", "Total", "Meat"), values = c("black", "green", "purple", "red")) 
+```
+
 
 ## 3. Baja California: Agriculture, Meat, and Industrial
 
@@ -285,6 +314,28 @@ There is no tax revenue generated when a cap is put on pollution because no taxe
 
 
 ### B. Tax on water use
+```{r}
+# finding the tax
+ggplot() +
+  geom_line(data = industrial_df, aes(x = abatement, y = price, color = "black")) +
+  geom_line(data = meat_df, aes(x = abatement, y = price, color = "red")) +
+  geom_line(data = ag_df, aes(x = abatement, y = price, color = "green")) +
+  geom_line(data = baja_tot_df, aes(x = abatement,
+                                    y = price,
+                                    color = "purple")) +
+  geom_vline(xintercept = 300) +
+  geom_hline(yintercept = 56.34909) + # the price when total Baja California abatement is 300 
+  labs(x = "Abatement (Acre Feet)",
+       y = "Price ($/AF)",
+       color = "Sector") +
+  theme_minimal() +
+  scale_x_continuous(limits = c(0,350)) +
+  scale_color_manual(labels = c("Industrial", "Agriculture", "Total", "Meat"), values = c("black", "green", "purple", "red"))
+
+# equation for aggregate MC: P = 1.8 + 0.18(abatement); to cut water supply in half, abatement = 300
+tax = 1.8 + (0.18*300)
+tax
+```
 
 #### (1) the total cost of meeting the target in Baja California
 
@@ -300,32 +351,25 @@ Agriculture Sector Cost
 
 ### C. Water Cap and Trade
 
+ Permits: 
+AG: 170 - 100 = 70
+Meat: 200 - 100 = 100
+Industrial: 230 - 100 = 130
+
+Price when Baja CA abatement is 300 → $55.80 (equivalent to the tax in part b) 
+AG abatement: ~106
+Meat abatement: ~122
+Industrial abatement: ~75
+
+Would they buy or sell? Permit - abatement < 0 → buying; permit - abatement > 0 → sell
+AG: 70 - 106 = -36 BUY
+Meat: 100 - 122 = -22 BUY
+Industrial: 130 - 75 = 55 SELL
+ 
+
 #### (1) the total cost of meeting the target in Baja California
 ```{r}
-cap_and_trade <- merge(meat_df, ag_df, by = "abatement") %>% 
-  rename("price_meat" = "price.x") %>%
-  rename("quantity_meat" = "quantity.x") %>% 
-  rename("price_agriculture" = "price.y") %>% 
-  rename("quantity_agriculture" = "quantity.y") 
 
-cap_and_trade_3 <- merge(cap_and_trade, industrial_df, by = "abatement") %>% 
-  rename("price_industrial" = "price") %>% 
-  rename("quantity_industrial" = "quantity") %>% 
-  select(abatement, price_meat, price_agriculture, price_industrial)
-
-ggplot() +
-  geom_line(data = cap_and_trade_3, aes(x = abatement,
-                                        y = price_industrial),
-                                        color = "black") +
-  geom_line(data = cap_and_trade_3, aes(x = abatement,
-                                        y = price_meat),
-                                        color = "red") +
-  geom_line(data = cap_and_trade_3, aes(x = abatement,
-                                        y = price_agriculture),
-                                        color = "green") +
-  theme_minimal() +
-  scale_y_continuous(limits = c(0,150)) +
-  geom_hline(yintercept = 56.24)
 ```
 
 #### (2) the total cost (or benefit) to each sector
