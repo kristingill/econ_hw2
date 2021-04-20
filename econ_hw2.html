@@ -495,13 +495,32 @@ tax</code></pre>
 <pre><code>## [1] 55.8</code></pre>
 <div id="the-total-cost-of-meeting-the-target-in-baja-california-1" class="section level4">
 <h4>(1) the total cost of meeting the target in Baja California</h4>
+<p><span class="math display">\[\int_0^{300} 1.8 + 0.18A\]</span></p>
+<pre class="r"><code>p_tot &lt;- function(A) {1.8 + (0.18*A)}
+integrate(p_tot, lower = 0, upper = 300)</code></pre>
+<pre><code>## 8640 with absolute error &lt; 9.6e-11</code></pre>
 </div>
 <div id="the-total-cost-or-benefit-to-each-sector-1" class="section level4">
 <h4>(2) the total cost (or benefit) to each sector</h4>
 <p>Agriculture Sector Cost</p>
+<p><span class="math display">\[\int_0^{106} 1.9 + 0.51A\]</span></p>
+<pre class="r"><code>p_ag_tax &lt;- function(A) {1.9 + (0.51*A)}
+integrate(p_ag, lower = 0, upper = 105)</code></pre>
+<pre><code>## 3010.875 with absolute error &lt; 3.3e-11</code></pre>
+<p>Meat Sector cost <span class="math display">\[\int_0^{121} 9.5 + 0.38A\]</span></p>
+<pre class="r"><code>p_meat &lt;- function(A) {9.5 + (0.38*A)}
+integrate(p_meat, lower = 0, upper = 121)</code></pre>
+<pre><code>## 3931.29 with absolute error &lt; 4.4e-11</code></pre>
+<p>Industrial Sector Cost <span class="math display">\[\int_0^{75} -27 + 1.1A\]</span></p>
+<pre class="r"><code>p_industrial &lt;- function(A) {-27 + (1.1*A)}
+integrate(p_industrial, lower = 0, upper = 75)</code></pre>
+<pre><code>## 1068.75 with absolute error &lt; 1.9e-11</code></pre>
 </div>
 <div id="the-tax-revenue-generated-1" class="section level4">
 <h4>(3) the tax revenue generated</h4>
+<pre class="r"><code>tax_revenue = tax*300
+tax_revenue</code></pre>
+<pre><code>## [1] 16740</code></pre>
 </div>
 </div>
 <div id="c.-water-cap-and-trade" class="section level3">
@@ -511,14 +530,28 @@ tax</code></pre>
 <p>Would they buy or sell? Permit - abatement &lt; 0 → buying; permit - abatement &gt; 0 → sell AG: 70 - 106 = -36 BUY Meat: 100 - 122 = -22 BUY Industrial: 130 - 75 = 55 SELL</p>
 <div id="the-total-cost-of-meeting-the-target-in-baja-california-2" class="section level4">
 <h4>(1) the total cost of meeting the target in Baja California</h4>
+<p><span class="math display">\[\int_0^{300} 1.8 + 0.18A\]</span></p>
+<pre class="r"><code>p_tot &lt;- function(A) {1.8 + (0.18*A)}
+integrate(p_tot, lower = 0, upper = 300)</code></pre>
+<pre><code>## 8640 with absolute error &lt; 9.6e-11</code></pre>
 </div>
 <div id="the-total-cost-or-benefit-to-each-sector-2" class="section level4">
 <h4>(2) the total cost (or benefit) to each sector</h4>
+<p>Agriculture Sector Cost</p>
+<pre class="r"><code>ag_cost = tax*35</code></pre>
+<p>Meat Sector Cost</p>
+<pre class="r"><code>meat_cost = tax*21</code></pre>
+<p>Industrial Sector Benefit</p>
+<pre class="r"><code>industrial_benefit = tax*55</code></pre>
 </div>
 <div id="the-tax-revenue-generated-2" class="section level4">
 <h4>(3) the tax revenue generated</h4>
+<p>NONE</p>
 </div>
 </div>
+</div>
+<div id="baja-california-sur-enters-cap-and-trade" class="section level2">
+<h2>4. Baja California Sur enters Cap and Trade</h2>
 </div>
 
 

@@ -338,16 +338,40 @@ tax
 ```
 
 #### (1) the total cost of meeting the target in Baja California
-
+$$\int_0^{300} 1.8 + 0.18A$$
+```{r}
+p_tot <- function(A) {1.8 + (0.18*A)}
+integrate(p_tot, lower = 0, upper = 300)
+```
 
 #### (2) the total cost (or benefit) to each sector
 
 Agriculture Sector Cost
-```{r}
 
+$$\int_0^{106} 1.9 + 0.51A$$
+```{r}
+p_ag_tax <- function(A) {1.9 + (0.51*A)}
+integrate(p_ag, lower = 0, upper = 105)
+```
+Meat Sector cost
+$$\int_0^{121} 9.5 + 0.38A$$
+```{r}
+p_meat <- function(A) {9.5 + (0.38*A)}
+integrate(p_meat, lower = 0, upper = 121)
+```
+
+Industrial Sector Cost
+$$\int_0^{75} -27 + 1.1A$$
+```{r}
+p_industrial <- function(A) {-27 + (1.1*A)}
+integrate(p_industrial, lower = 0, upper = 75)
 ```
 
 #### (3) the tax revenue generated
+```{r}
+tax_revenue = tax*300
+tax_revenue
+```
 
 ### C. Water Cap and Trade
 
@@ -368,9 +392,58 @@ Industrial: 130 - 75 = 55 SELL
  
 
 #### (1) the total cost of meeting the target in Baja California
-```{r}
 
+$$\int_0^{300} 1.8 + 0.18A$$
+```{r}
+p_tot <- function(A) {1.8 + (0.18*A)}
+integrate(p_tot, lower = 0, upper = 300)
 ```
 
 #### (2) the total cost (or benefit) to each sector
+
+Agriculture Sector Cost
+```{r}
+ag_cost = tax*35
+ag_cost
+```
+
+Meat Sector Cost
+```{r}
+meat_cost = tax*21
+meat_cost
+```
+
+Industrial Sector Benefit
+```{r}
+industrial_benefit = tax*55
+industrial_benefit
+```
+
 #### (3) the tax revenue generated
+NONE
+
+## 4. Baja California Sur enters Cap and Trade
+```{r}
+ggplot() +
+  geom_line(data = industrial_df, aes(x = abatement, y = price, color = "black")) +
+  geom_line(data = meat_df, aes(x = abatement, y = price, color = "red")) +
+  geom_line(data = ag_df, aes(x = abatement, y = price, color = "green")) +
+  geom_line(data = baja_tot_df, aes(x = abatement,
+                                    y = price,
+                                    color = "purple")) +
+  geom_line(data = urban_df, aes(x = abatement,
+                                 y = price,
+                                 color = "lightblue")) +
+  geom_vline(xintercept = 300) +
+  geom_hline(yintercept = 56.34909) + # the price when total Baja California abatement is 300 
+  labs(x = "Abatement (Acre Feet)",
+       y = "Price ($/AF)",
+       color = "Sector",
+       title = "Marginal Cost of Water Use Abatement") +
+  theme_minimal() +
+  scale_x_continuous(limits = c(0,310)) +
+  scale_y_continuous(limits = c(0,310)) +
+  scale_color_manual(labels = c("Industrial", "Agriculture", "Urban", "Total", "Meat"), values = c("black", "green", "lightblue3", "purple", "red"))
+```
+
+Baja California Sur cap at 300AF means that the urban sector only has to cap its water use at 300AF. 
