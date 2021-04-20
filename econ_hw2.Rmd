@@ -20,11 +20,14 @@ library(patchwork)
 water_data <- read_csv(here("data", "HW2_Water.csv")) %>% 
   clean_names()
 ```
+###### TO: Baja California Sur and Baja California Water Officials
+###### FROM: Alyssa Kibbe and Kristin Gill, Water Experts
 
+#### Water is a necessary natural good for all communities. However, there is a finitite amount of water and resources must be managed to ensure that safe, usable water can be allocated to each industry. 
 ## 1. 
 ### Agriculture
 P = 1.9 + 0.51(abatement)
-```{r}
+```{r, include=FALSE}
 ggplot(data = water_data, aes(x = reduced_water_use_abatement,
                               y = mc_agriculture)) +
   geom_line(colour = "green") +
@@ -42,7 +45,7 @@ ggplot(data = water_data, aes(x = reduced_water_use_abatement,
 
 ### Meat
 P = 9.5 + 0.38(abatement)
-```{r}
+```{r, include=FALSE}
 ggplot(data = water_data, aes(x = reduced_water_use_abatement,
                               y = mc_meat)) +
   geom_line(colour = "red") +
@@ -61,7 +64,7 @@ ggplot(data = water_data, aes(x = reduced_water_use_abatement,
 
 ### Industrial
 P = -27 + 1.1(abatement)
-```{r}
+```{r, include=FALSE}
 ggplot(data = water_data, aes(x = reduced_water_use_abatement,
                               y = mc_industrial)) +
   geom_line(colour = "purple") +
@@ -80,7 +83,7 @@ ggplot(data = water_data, aes(x = reduced_water_use_abatement,
 
 ### Urban
 P = -14 + 0.6(abatement)
-```{r}
+```{r, include=FALSE}
 ggplot(data = water_data, aes(x = reduced_water_use_abatement,
                               y = mc_urban)) +
   geom_line(colour = "blue") +
@@ -96,7 +99,7 @@ ggplot(data = water_data, aes(x = reduced_water_use_abatement,
   ggpubr::stat_regline_equation(label.x = 115, label.y = 0)
 ```
 
-### All Together
+### Combined Marginal Cost per Industry
 ```{r, fig.cap = "**Figure 1:** The marginal cost of water use abatement in Baja California and Baja California Sur for the sectors Agriculture, Industrial, Meat, and Urban. Water quantity is measured in Acre Feet and price is Dollars per Acre Feet. The graph on the left is the original marginal cost data and the graph on the right shows the estimated marginal cost curves using linear regression."}
 #combined graphs
 og_data <- ggplot() +
