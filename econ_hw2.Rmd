@@ -97,7 +97,7 @@ ggplot(data = water_data, aes(x = reduced_water_use_abatement,
 ```
 
 ### All Together
-```{r}
+```{r, fig.cap = "**Figure 1:** The marginal cost of water use abatement in Baja California and Baja California Sur for the sectors Agriculture, Industrial, Meat, and Urban. Water quantity is measured in Acre Feet and price is Dollars per Acre Feet. The graph on the left is the original marginal cost data and the graph on the right shows the estimated marginal cost curves using linear regression."}
 #combined graphs
 og_data <- ggplot() +
   geom_line(data = water_data, aes(x = reduced_water_use_abatement,y = mc_urban, color = "blue"), show.legend = FALSE) +
@@ -110,19 +110,19 @@ og_data <- ggplot() +
        color = "Sector") +
   theme_minimal() +
   scale_x_continuous(limit = c(0,150)) +
-  scale_color_manual(labels = c("Urban", "Industrial", "Meat", "Agriculture"), values = c("blue", "black", "red", "green"))
+  scale_color_manual(labels = c("Industrial", "Urban", "Agriculture", "Meat"), values = c("black", "blue", "green", "red"))
 
 # is this what they are asking for?
-ag_df <- data.frame(abatement = seq.int(from = 0, to = 170)) %>% 
+ag_df <- data.frame(abatement = seq.int(from = 0, to = 350)) %>% 
   mutate(price = 1.9 + (0.51*abatement))
 
-meat_df <- data.frame(abatement = seq.int(from = 0, to = 200)) %>% 
+meat_df <- data.frame(abatement = seq.int(from = 0, to = 350)) %>% 
   mutate(price = 9.5 + (0.38*abatement))
 
-industrial_df <- data.frame(abatement = seq.int(from = 0, to = 230)) %>% 
+industrial_df <- data.frame(abatement = seq.int(from = 0, to = 350)) %>% 
   mutate(price = -27 + (1.1*abatement))
 
-urban_df <- data.frame(abatement = seq.int(from = 0, to = 300)) %>% 
+urban_df <- data.frame(abatement = seq.int(from = 0, to = 350)) %>% 
   mutate(price = -14 + (0.6*abatement))
 
 reg_data <- ggplot() +
@@ -136,7 +136,7 @@ reg_data <- ggplot() +
   theme_minimal() +
   scale_x_continuous(limit = c(0,150)) +
   scale_y_continuous(limit = c(0,150)) +
-  scale_color_manual(labels = c("Urban", "Industrial", "Meat", "Agriculture"), values = c("blue", "black", "red", "green"))
+  scale_color_manual(labels = c("Industrial", "Urban", "Agriculture", "Meat"), values = c("black", "blue", "green", "red"))
 
 # put them together
 graph_compound <- (og_data|reg_data) & plot_layout(guides = "collect")
@@ -147,7 +147,7 @@ graph_compound
 ## 2. 
 ### Agriculture
 ```{r}
-ag_df <- data.frame(abatement = seq.int(from = 0, to = 170)) %>% 
+ag_df <- data.frame(abatement = seq.int(from = 0, to = 350)) %>% 
   mutate(price = 1.9 + (0.51*abatement)) %>% 
   mutate(quantity = 170 - abatement)
 
@@ -163,7 +163,7 @@ ggplot(data = ag_df, aes(x = quantity,
 
 ### Meat
 ```{r}
-meat_df <- data.frame(abatement = seq.int(from = 0, to = 200)) %>% 
+meat_df <- data.frame(abatement = seq.int(from = 0, to = 350)) %>% 
   mutate(price = 9.5 + (0.38*abatement)) %>% 
   mutate(quantity = 200 - abatement)
 
@@ -179,7 +179,7 @@ ggplot(data = meat_df, aes(x = quantity,
 
 ### Industrial
 ```{r}
-industrial_df <- data.frame(abatement = seq.int(from = 0, to = 230)) %>% 
+industrial_df <- data.frame(abatement = seq.int(from = 0, to = 350)) %>% 
   mutate(price = -27 + (1.1*abatement)) %>% 
   mutate(quantity = 230 - abatement)
 
@@ -195,7 +195,7 @@ ggplot(data = industrial_df, aes(x = quantity,
 
 ### Urban
 ```{r}
-urban_df <- data.frame(abatement = seq.int(from = 0, to = 300)) %>% 
+urban_df <- data.frame(abatement = seq.int(from = 0, to = 350)) %>% 
   mutate(price = -14 + (0.6*abatement)) %>% 
   mutate(quantity = 300 - abatement)
 
@@ -208,7 +208,38 @@ ggplot(data = urban_df, aes(x = quantity,
        title = "Urban Sector Demand for Water Use") +
   ggpubr::stat_regline_equation(label.x = 25, label.y = 5)
 ```
+
+
 The industrial sector is willing to pay the most ($230) for the first acre foot of water. 
+```{r}
+# all the BC demand curves together
+baja_tot_df <- data.frame(quantity = seq.int(from = 0, to = 600)) %>% 
+  mutate(price = (quantity - 609.92)/(-5.50)) %>% 
+  mutate(abatement = 600 - quantity)
+
+ggplot() +
+  geom_line(data = ag_df, aes(x = quantity,
+                       y = price,
+                       color = "green")) +
+  geom_line(data = meat_df, aes(x = quantity,
+                         y = price,
+                         color = "red")) +
+  geom_line(data = industrial_df, aes(x = quantity,
+                               y = price,
+                               color = "black")) +
+  geom_line(data = baja_tot_df, aes(x = quantity,
+                                    y = price,
+                                    color = "purple")) +
+  theme_minimal() +
+  scale_x_continuous(limits = c(0,250)) +
+  scale_y_continuous(limits = c(0,250)) +
+  labs(x = "Quantity(AF Water)",
+       y = "Price ($/AF)",
+       title = "Marginal Benefit of Water Use by Sector",
+       color = "Sector") +
+  scale_color_manual(labels = c("Industrial", "Agriculture", "Total", "Meat"), values = c("black", "green", "purple", "red")) 
+```
+
 
 ## 3. Baja California: Agriculture, Meat, and Industrial
 
@@ -216,16 +247,26 @@ The industrial sector is willing to pay the most ($230) for the first acre foot 
 
 #### (1) the total cost of meeting the target in Baja California
 
-$$\int_0^{300} -15.6 + 1.99A$$
+$$\int_0^{300} 1.8 + 0.18A$$
 
 ```{r}
-# this might be wrong; I added together p_ag + p_meat + p_industrial to get this equation
-p_tot <- function(A) {-15.6 + (1.99*A)}
-integrate(p_tot, lower = 0, upper = 300)
+# demand aggregate for Baja California = demand agriculture + demand industrial + demand meat
 
-baja_tot_df <- data.frame(abatement = seq.int(from = 0, to = 600)) %>% 
-  mutate(price = -15.6 + (1.99*abatement)) %>% 
-  mutate(quantity = 600 - abatement)
+# demand agriculture: P = 89 - 0.51 Q --> Q = (P-89)/(-0.51)
+# demand industrial: P = 230 - 1.1 Q --> Q = (P - 230)/(-1.1)
+# demand meat: P = 86 - 0.38 Q --> Q = (P - 86)/(-0.38)
+
+# demand aggregate: P = (Q - 609.92)/(-5.50)
+
+baja_tot_df <- data.frame(quantity = seq.int(from = 0, to = 600)) %>% 
+  mutate(price = (quantity - 609.92)/(-5.50)) %>% 
+  mutate(abatement = 600 - quantity)
+
+ggplot(data = baja_tot_df, aes(x = abatement,
+                               y = price)) +
+  geom_line() +
+  theme_minimal() +
+  ggpubr::stat_regline_equation(label.x = 25, label.y = 5)
 
 ggplot(data = baja_tot_df, aes(x = quantity,
                                y = price)) +
@@ -236,6 +277,8 @@ ggplot(data = baja_tot_df, aes(x = quantity,
        title = "Baja California Demand for Water Use") +
   ggpubr::stat_regline_equation(label.x = 25, label.y = 5)
 
+p_tot <- function(A) {1.8 + (0.18*A)}
+integrate(p_tot, lower = 0, upper = 300)
 ```
 
 #### (2) the total cost (or benefit) to each sector
@@ -267,46 +310,40 @@ integrate(p_industrial, lower = 0, upper = 100)
 
 #### (3) the tax revenue generated
 
-There is no tax revenue generated
+
 ```{r}
 
 ```
+There is no tax revenue generated when a cap is put on pollution because no taxes have been implemented. 
+
 
 
 ### B. Tax on water use
+```{r}
+# finding the tax
+ggplot() +
+  geom_line(data = industrial_df, aes(x = abatement, y = price, color = "black")) +
+  geom_line(data = meat_df, aes(x = abatement, y = price, color = "red")) +
+  geom_line(data = ag_df, aes(x = abatement, y = price, color = "green")) +
+  geom_line(data = baja_tot_df, aes(x = abatement,
+                                    y = price,
+                                    color = "purple")) +
+  geom_vline(xintercept = 300) +
+  geom_hline(yintercept = 56.34909) + # the price when total Baja California abatement is 300 
+  labs(x = "Abatement (Acre Feet)",
+       y = "Price ($/AF)",
+       color = "Sector") +
+  theme_minimal() +
+  scale_x_continuous(limits = c(0,350)) +
+  scale_color_manual(labels = c("Industrial", "Agriculture", "Total", "Meat"), values = c("black", "green", "purple", "red"))
+
+# equation for aggregate MC: P = 1.8 + 0.18(abatement); to cut water supply in half, abatement = 300
+tax = 1.8 + (0.18*300)
+tax
+```
 
 #### (1) the total cost of meeting the target in Baja California
 
-$$\int_0^{300} -15.6 + 1.99A$$
-```{r}
-# price when A = 300
-tax = -15.6 + (1.99*300)
-
-baja_tot_tax <- baja_tot_df %>% 
-  mutate(price_tax = price - 581.4) %>% 
-  mutate(quantity_tax = 309.3 - (0.5*price_tax)) # I think the new equation rearranged after subtracting the tax from the price?
-
-ggplot(data = baja_tot_tax, aes(x = quantity_tax,
-                                y = price_tax)) +
-  geom_line() +
-  theme_minimal() +
-  scale_y_continuous(limits = c(0, 620)) +
-  scale_x_continuous(limits = c(0, 310))+
-  ggpubr::stat_regline_equation(label.x = 25, label.y = 150)
-
-# shift down in the demand curve
-ggplot() +
-  geom_line(data = baja_tot_tax, aes(x = quantity_tax,
-                                y = price_tax)) +
-  geom_line(data = baja_tot_df, aes(x = quantity,
-                               y = price)) +
-  scale_y_continuous(limits = c(0, 1200)) +
-  theme_minimal()
-
-# isn't the total cost the same as before? $$\int_0^{300} -15.6 + 1.99A$$
-tax_cost_tot <- function(A) {-15.6 + (1.99*A)}
-integrate(p_tot, lower = 0, upper = 300)
-```
 
 #### (2) the total cost (or benefit) to each sector
 
@@ -319,6 +356,26 @@ Agriculture Sector Cost
 
 ### C. Water Cap and Trade
 
+ Permits: 
+AG: 170 - 100 = 70
+Meat: 200 - 100 = 100
+Industrial: 230 - 100 = 130
+
+Price when Baja CA abatement is 300 → $55.80 (equivalent to the tax in part b) 
+AG abatement: ~106
+Meat abatement: ~122
+Industrial abatement: ~75
+
+Would they buy or sell? Permit - abatement < 0 → buying; permit - abatement > 0 → sell
+AG: 70 - 106 = -36 BUY
+Meat: 100 - 122 = -22 BUY
+Industrial: 130 - 75 = 55 SELL
+ 
+
 #### (1) the total cost of meeting the target in Baja California
+```{r}
+
+```
+
 #### (2) the total cost (or benefit) to each sector
 #### (3) the tax revenue generated
