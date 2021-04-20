@@ -267,7 +267,7 @@ integrate(p_industrial, lower = 0, upper = 100)
 
 #### (3) the tax revenue generated
 
-NONE ??????
+There is no tax revenue generated
 ```{r}
 
 ```
