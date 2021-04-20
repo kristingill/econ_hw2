@@ -348,7 +348,7 @@ integrate(p_tot, lower = 0, upper = 300)
 
 Agriculture Sector Cost
 
-$$\int_0^{106} 1.9 + 0.51A$$
+$$\int_0^{105} 1.9 + 0.51A$$
 ```{r}
 p_ag_tax <- function(A) {1.9 + (0.51*A)}
 integrate(p_ag, lower = 0, upper = 105)
@@ -446,4 +446,7 @@ ggplot() +
   scale_color_manual(labels = c("Industrial", "Agriculture", "Urban", "Total", "Meat"), values = c("black", "green", "lightblue3", "purple", "red"))
 ```
 
-Baja California Sur cap at 300AF means that the urban sector only has to cap its water use at 300AF. 
+Baja California Sur (BCS) cap at 300AF means that the urban sector only has to cap its water use at 300AF. At the permit trading price of $55.80, BCS would abate 116AF of water. The difference between the permitted amount and abatement is 184AF, so BCS would have 184AF of water to sell in the market. 
+
+## 5. Co-Benefits of Reduced Water Use
+
